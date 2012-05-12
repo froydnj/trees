@@ -1,0 +1,15 @@
+This package implements binary trees of various kinds, presenting a
+uniform interface to them all.  Reading package.lisp should give you an
+idea of what sorts of things you can do to trees and reading
+binary-trees.lisp and generics.lisp provides a slightly more in-depth
+look at the functions you would want to use.
+
+There is a moderately extensive test suite which one can run with
+(ASDF:OOS 'ASDF:TEST-OP :TREES).  Please be aware that it does take a
+bit of time to run.  If any tests fail, you have found a bug; please
+report it.
+
+Report any bugs, comments, or improvements to <froydnj@gmail.com>.
+
+Nathan Froyd
+18 March 2008

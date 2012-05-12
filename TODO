@@ -1,0 +1,68 @@
+							-*- mode: org -*-
+
+* other variations on balanced trees?
+left-leaning red-black trees come to mind
+* add necessary type declarations to get good performance out of structures
+* eliminate SYMBOL-MACROLET from red-black deletion routines
+* add documentation of some sort
+* make sure the asdf system looks sane
+* parse out declarations from DOTREE's &BODY?
+* fix DO-TREE-RANGE
+* fix WITH-TREE-ITERATOR
+* write tests for DO-TREE-RANGE
+** make sure to include tests where
+- :lower is out-of-range for the tree, both :KEY and :INDEX
+- :upper is out-of-range for the tree, both :KEY and :INDEX
+- :upper is < :lower (<= is probably ok, I think)
+* try to make DO-TREE-RANGE support :FROM-END?
+* write tests for WITH-TREE-ITERATOR
+* add :START and :END arguments for REDUCE?
+
+* DONE convert trees to structures?
+* DONE use symbol names for the testcases
+* DONE make separate paths for FUNCTION objects for KEY/PRED/TEST and everything else
+or add COERCEs in MAKE-BINARY-TREE
+* DONE add better test suite
+* DONE change iterators to return the node rather than the datum
+* DONE update utility bits to match
+* DONE make the iterators check the modcount before incrementing
+* DONE iterators feel ugly, try redoing them
+* DONE convert test suite to use RT
+* DONE make DOTREE generate a TAGBODY so that GO works as expected
+* DONE write tests for REDUCE :FROM_END T
+* DONE change method combination in test suite to be non-SBCL specific
+* DONE get ranks working correctly
+* DONE add validation checks for ranks to tests
+* DONE delete old TREES building code from tree-test.lisp
+* DONE switch red-black trees over to using ROTATE-{LEFT,RIGHT}
+* DONE add generation count to accomodate limited forms of mutation during iteration
+* DONE rearrange DELETE and INSERT to have congruent arglists
+* DONE rearrange DELETE and INSERT to have congruent return values
+* DONE write wrapping generic function for MAKE-TREE
+* DONE add validation routines for the various tree kinds
+** DONE red-black black-height invariant
+** DONE red-black child constraint
+these are really slow, though; see if they can be made faster
+** DONE avl height constraint
+** DONE aa level constraint
+need to figure out how this last one works (wikipedia knows all)
+* DONE rewrite testsuite to work on execution traces
+** DONE generate execution traces from testing routines
+** DONE interface to redo execution traces
+what would I use this for, though?
+* DONE redo deletion routines for red-black trees
+* DONE redo deletion routines for AVL trees
+try to factor as much common code from basic and AA
+* DONE fix WITH-TREE-ITERATOR to honor FROM-END
+again, WITH-TREE-ITERATOR needs to be modified to take advantage
+* DONE fix WITH-TREE-ITERATOR to not crash when there's nothing left to move to
+* DONE fix order of return values for WITH-TREE-ITERATOR
+this is basically done with new iterators, but WITH-TREE-ITERATOR needs to use them
+* DONE change DELETE to return the item so deleted
+* DONE rewrite iterators to handle non-parented trees
+some sort of parent/no-parent iterators with generic functions
+* DONE convert nodes to structures
+* DONE profile after doing the structure conversion to find more hotspots
+assuming that the conversion improves performance the estimated 30-50%
+* DONE switch AA trees over to using ROTATE-{LEFT,RIGHT}
+* DONE switch avl insertion routines over to using ROTATE-{LEFT,RIGHT}

@@ -1,0 +1,102 @@
+-*- mode: outline -*-
+
+* Version 0.11, released 17-05-2008
+
+** bugfixes
+
+Fixed an issue with Lispworks and AVL trees.  (Thanks to Gregory Tod.)
+
+Removed calls to SLOT-BOUNDP in node printing functions.  (Thanks to cmm
+on #lisp.)
+
+** improvements
+
+Converted trees to be structure-based, rather than CLOS-based.  Also
+restructured things so that INSERT/DELETE/FIND are regular functions
+rather than generic functions.  Significant speedups were obtained while
+benchmarking these changes.
+
+* Version 0.10, released 18-03-2008
+
+This version is a near-total rewrite, with all the incompatibilities
+such a release brings.  Please refer to generics.lisp for some details
+on what you might have to do to fix your code, and do note that
+DO-TREE-RANGE and WITH-TREE-ITERATOR have been removed for the time
+being.
+
+* Version 0.6.2, released 30-07-2006
+
+** bugfixes
+
+Fixed bogus DO form in WITH-TREE-ITERATOR.  (Thanks to Daniel Franke.)
+
+** incompatible changes
+
+The two return values from ITER in WITH-TREE-ITERATOR have been swapped
+to more closely mimic the semantics of the iterator in
+WITH-HASH-TABLE-ITERATOR.  While this is an incompatible change, it is
+unlikely anybody will care, since WITH-TREE-ITERATOR was broken in
+previous releases anyway.
+
+* Version 0.6.1, released 09-01-2006
+
+** bugfixes
+
+Fix three-argument call to EQ in MAXIMUM-NODE.  (Thanks to Markus
+Ingvarsson.)
+
+* Version 0.6, released 19-12-2005
+
+** bugfixes
+
+Fixed syntax problems preventing ASDF-INSTALL from working.
+
+Fixed problems with tree rotation code.
+
+** improvements
+
+Major functions exported from TREES (FIND, INSERT, DELETE) are now
+generic functions; this change enables support of future search tree types.
+
+* Version 0.5, released 11-02-2005
+
+** bugfixes
+
+Peter Slotko contributed fixes for the following problems:
+
+DO-TREE-RANGE would produce unexpected behavior with this example:
+
+;; *tree* contains 11, 17, 21, 25, and 30
+(trees:do-tree-range (x *tree* :lower 15 :upper 18)
+  (print x)) 
+
+=> 11
+   17
+   NIL
+
+The documentation strings for some functions were incorrect.
+
+** new features
+
+Minor optimizations have been made in some places.
+
+* Version 0.4, released 10-03-2004
+
+** incompatible changes
+
+Removed TREE- prefix from many standard functions.  The most useful
+functions now have names which shadow symbols in COMMON-LISP.  Feedback
+sought on this change.
+
+** new features
+
+Added utils.lisp with several new macros and functions: DOTREE,
+DO-TREE-RANGE, WITH-TREE-ITERATOR (untested), REDUCE, and POSITION
+
+Added LOWER-BOUND and UPPER-BOUND (in the spirit of C++'s map class)
+
+** miscellany
+
+Added LICENSE file specifying the license for the package (BSD)
+
+Optimized lookup routines

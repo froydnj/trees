@@ -1,0 +1,16 @@
+(load "package")
+(load "generics")
+(load "types")
+(load "binary-trees")
+(load "print")
+(load "red-black-trees")
+(load "avl-trees")
+(load "aa-trees")
+(load "utils")
+
+(defvar x (bt:make-binary-tree :red-black :compfun #'< :eqfun #'= :keyfun #'identity))
+(dotimes (i 100)
+  (bt:insert x i))
+
+(bt::do-tree-range (i x)
+  (print i))
