@@ -118,7 +118,10 @@ less than KEY."
   "Return the item in TREE possessing a key which is equal to or less
 than KEY.  Returns NIL if there is no such item."
   (let ((node (lower-bound-node key tree)))
-    (and node (datum node))))
+    (and node
+         (or (funcall (pred tree) (funcall (key tree) (datum node)) key)
+             (funcall (test tree) key (funcall (key tree) (datum node))))
+         (datum node))))
 
 (declaim (inline upper-bound-node-with-path))
 (defun upper-bound-node-with-path (key tree pathp)
@@ -146,7 +149,10 @@ than KEY."
   "Return the item in TREE possessing a key which is equal to or
 greater than KEY.  Returns NIL if there is no such item."
   (let ((node (upper-bound-node key tree)))
-    (and node (datum node))))
+    (and node
+         (or (funcall (pred tree) key (funcall (key tree) (datum node)))
+             (funcall (test tree) key (funcall (key tree) (datum node))))
+         (datum node))))
 
 (defun find-node-with-key (tree key)
   "Find the node in TREE with key KEY.  Might return the null node if no
