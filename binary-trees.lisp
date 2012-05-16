@@ -57,7 +57,7 @@
       (let ((node-key (funcall key (datum node))))
         (cond
           ((funcall test node-key item-key)
-           (return-from find-insertion-point (values node direction-stack item-key)))
+           (return-from find-insertion-point (values node direction-stack node-key)))
           ((funcall pred item-key node-key)
            (push (cons node 'left) direction-stack)
            (setf node (left node)))
@@ -106,7 +106,7 @@ indicates whether ITEM was inserted or not."
                   (locate-node (right node) node
                                (when pathp
                                  (cons (cons node 'right) path)))))))
-      (locate-node (root tree) nil nil))))
+      (locate-node (root tree) (root tree) nil))))
 (declaim (notinline lower-bound-node-with-path))
 
 (defun lower-bound-node (key tree)
@@ -134,7 +134,7 @@ than KEY.  Returns NIL if there is no such item."
                  (t
                   (locate-node (right node) candidate
                                (when pathp (cons (cons node 'right) path)))))))
-      (locate-node (the tree-node (root tree)) nil nil))))
+      (locate-node (the tree-node (root tree)) (root tree) nil))))
 (declaim (notinline upper-bound-node-with-path))
 
 (defun upper-bound-node (key tree)
