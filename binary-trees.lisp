@@ -93,12 +93,14 @@ indicates whether ITEM was inserted or not."
 (declaim (inline lower-bound-node-with-path))
 (defun lower-bound-node-with-path (key tree pathp)
   (let ((pred (pred tree))
+        (test (test tree))
         (%key (key tree)))
     (declare (type function pred %key))
     (labels ((locate-node (node candidate path)
                (cond
                  ((null node) (values candidate path))
-                 ((funcall pred key (funcall %key (datum node)))
+                 ((and (funcall pred key (funcall %key (datum node)))
+                       (not (funcall test key (funcall %key (datum node)))))
                   (locate-node (left node) candidate
                                (when pathp
                                  (cons (cons node 'left) path))))
@@ -126,12 +128,14 @@ than KEY.  Returns NIL if there is no such item."
 (declaim (inline upper-bound-node-with-path))
 (defun upper-bound-node-with-path (key tree pathp)
   (let ((pred (pred tree))
+        (test (test tree))
         (%key (key tree)))
     (declare (type function pred %key))
     (labels ((locate-node (node candidate path)
                (cond
                  ((null node) (values candidate path))
-                 ((funcall pred key (funcall %key (datum node)))
+                 ((or (funcall pred key (funcall %key (datum node)))
+                      (funcall test key (funcall %key (datum node))))
                   (locate-node (left node) node
                                (when pathp (cons (cons node 'left) path))))
                  (t
