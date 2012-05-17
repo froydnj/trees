@@ -44,6 +44,17 @@
              (:copier nil)
              (:include tree-node))
   (level 1 :type fixnum))
+
+(declaim (inline make-interval))
+(defstruct interval start end)
+
+(defstruct (interval-tree-node
+            (:conc-name)
+            (:constructor %make-interval-tree-node (datum))
+            (:copier nil)
+            (:include trees::red-black-tree-node))
+  (end-val))
+
 
 ;;; trees
 

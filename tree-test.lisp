@@ -241,6 +241,41 @@
       (error (c) c)
       (:no-error (value) value))))
 
+(defun make-random-interval ()
+  (let ((a (random 100))
+        (b (random 100)))
+    (trees:make-interval :start (min a b)
+                         :end (max a b))))
+
+(defun build-interval-tree ()
+  (let ((tree (trees:make-binary-tree :interval #'<=
+                                      :key #'identity
+                                      :test #'trees:interval-equal))
+        (intervals))
+    (dotimes (i 1000)
+      (let ((interval (make-random-interval)))
+        (push interval intervals)
+        (trees:insert interval tree)))
+    (values tree intervals)))
+
+(defun check-interval-in-interval (i1 i2)
+  "Check if I1 overlaps with I2"
+  (and (<= (trees:interval-start i1) (trees:interval-end i2))
+       (>= (trees:interval-end i1) (trees:interval-start i2))))
+
+(defun build-and-check-interval-tree ()
+  (multiple-value-bind (tree intervals)
+      (build-interval-tree)
+    (declare (ignore intervals))
+    (dotimes (i 1000)
+      (let* ((interval (make-random-interval))
+             (found-intervals (trees:find-in-interval interval tree)))
+        (loop for found-interval in found-intervals do
+          (unless (check-interval-in-interval interval found-interval)
+            (error "Interval overlap failure:~%~A~%~A"
+                   interval found-interval))))))
+  t)
+
 (rtest:deftest :normal (build-and-run-checkers :normal) t)
 
 (rtest:deftest :avl (build-and-run-checkers :avl) t)
@@ -248,3 +283,5 @@
 (rtest:deftest :red-black (build-and-run-checkers :red-black) t)
 
 (rtest:deftest :aa (build-and-run-checkers :aa) t)
+
+(rtest:deftest :interval (build-and-check-interval-tree) t)
