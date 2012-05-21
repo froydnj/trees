@@ -93,12 +93,14 @@ indicates whether ITEM was inserted or not."
 (declaim (inline lower-bound-node-with-path))
 (defun lower-bound-node-with-path (key tree pathp)
   (let ((pred (pred tree))
+        (test (test tree))
         (%key (key tree)))
     (declare (type function pred %key))
     (labels ((locate-node (node candidate path)
                (cond
                  ((null node) (values candidate path))
-                 ((funcall pred key (funcall %key (datum node)))
+                 ((and (funcall pred key (funcall %key (datum node)))
+                       (not (funcall test key (funcall %key (datum node)))))
                   (locate-node (left node) candidate
                                (when pathp
                                  (cons (cons node 'left) path))))
@@ -106,7 +108,7 @@ indicates whether ITEM was inserted or not."
                   (locate-node (right node) node
                                (when pathp
                                  (cons (cons node 'right) path)))))))
-      (locate-node (root tree) nil nil))))
+      (locate-node (root tree) (root tree) nil))))
 (declaim (notinline lower-bound-node-with-path))
 
 (defun lower-bound-node (key tree)
@@ -118,23 +120,28 @@ less than KEY."
   "Return the item in TREE possessing a key which is equal to or less
 than KEY.  Returns NIL if there is no such item."
   (let ((node (lower-bound-node key tree)))
-    (and node (datum node))))
+    (and node
+         (or (funcall (pred tree) (funcall (key tree) (datum node)) key)
+             (funcall (test tree) key (funcall (key tree) (datum node))))
+         (datum node))))
 
 (declaim (inline upper-bound-node-with-path))
 (defun upper-bound-node-with-path (key tree pathp)
   (let ((pred (pred tree))
+        (test (test tree))
         (%key (key tree)))
     (declare (type function pred %key))
     (labels ((locate-node (node candidate path)
                (cond
                  ((null node) (values candidate path))
-                 ((funcall pred key (funcall %key (datum node)))
+                 ((or (funcall pred key (funcall %key (datum node)))
+                      (funcall test key (funcall %key (datum node))))
                   (locate-node (left node) node
                                (when pathp (cons (cons node 'left) path))))
                  (t
                   (locate-node (right node) candidate
                                (when pathp (cons (cons node 'right) path)))))))
-      (locate-node (the tree-node (root tree)) nil nil))))
+      (locate-node (the tree-node (root tree)) (root tree) nil))))
 (declaim (notinline upper-bound-node-with-path))
 
 (defun upper-bound-node (key tree)
@@ -146,7 +153,10 @@ than KEY."
   "Return the item in TREE possessing a key which is equal to or
 greater than KEY.  Returns NIL if there is no such item."
   (let ((node (upper-bound-node key tree)))
-    (and node (datum node))))
+    (and node
+         (or (funcall (pred tree) key (funcall (key tree) (datum node)))
+             (funcall (test tree) key (funcall (key tree) (datum node))))
+         (datum node))))
 
 (defun find-node-with-key (tree key)
   "Find the node in TREE with key KEY.  Might return the null node if no
