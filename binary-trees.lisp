@@ -57,7 +57,7 @@
       (let ((node-key (funcall key (datum node))))
         (cond
           ((funcall test node-key item-key)
-           (return-from find-insertion-point (values node direction-stack item-key)))
+           (return-from find-insertion-point (values node direction-stack node-key)))
           ((funcall pred item-key node-key)
            (push (cons node 'left) direction-stack)
            (setf node (left node)))
