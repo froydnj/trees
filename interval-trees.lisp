@@ -72,8 +72,8 @@
                  (when (funcall pred (interval-start interval) (end-val node))
                    (find-nodes-in-interval pred (left node) interval))
                  (when (node-in-interval-p pred node interval) (list node))
-                 ;; Right subtree if we're anywhere PRED of node-start
-                 (when (funcall pred (node-start node) (interval-start interval))
+                 ;; Right subtree if we're anywhere (NOT PRED) of node-start
+                 (when (not (funcall pred (node-start node) (interval-start interval)))
                    (find-nodes-in-interval pred (right node) interval)))))
 
 (defun find-in-interval (interval tree)
