@@ -43,6 +43,7 @@
     (funcall test tree bitvector)))
 
 (defun check-equivalency (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (loop
      for start = 0 then (1+ x)
      for x = (position 1 bitvector :start start)
@@ -51,6 +52,7 @@
      finally (return t)))
 
 (defun check-selection (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (unless (zerop (trees:size tree))
     (loop for start = 0 then (1+ x)
        for x = (position 1 bitvector :start start)
@@ -60,6 +62,7 @@
        finally (return t))))
 
 (defun check-forward-position-t (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (loop for start = 0 then (1+ x)
      for x = (position 1 bitvector :start start)
      for i from 0
@@ -68,6 +71,7 @@
      finally (return t)))
 
 (defun check-forward-position-nil (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (loop for start = 0 then (1+ x)
      for x = (position 0 bitvector :start start)
      while x
@@ -75,6 +79,7 @@
      finally (return t)))
 
 (defun check-backward-position-t (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (loop for end = nil then x
      for x = (position 1 bitvector :from-end t :end end)
      for i downfrom (1- (trees:size tree))
@@ -83,6 +88,7 @@
      finally (return t)))
 
 (defun check-backward-position-nil (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (loop for end = nil then x
      for x = (position 0 bitvector :from-end t :end end)
      while x
@@ -90,6 +96,7 @@
      finally (return t)))
 
 (defun check-forward-iteration (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (loop with iter = (trees::make-iterator tree :forwardp t)
      for start = 0 then (1+ x)
      for x = (position 1 bitvector :start start)
@@ -99,6 +106,7 @@
      finally (return t)))
 
 (defun check-backward-iteration (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (loop with iter = (trees::make-iterator tree :forwardp nil)
      for end = nil then y
      for y = (position 1 bitvector :from-end t :end end)
@@ -108,6 +116,7 @@
      finally (return t)))
 
 (defun check-dotree (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (let ((new (bit-xor bitvector bitvector)))
     (trees:dotree (x tree)
       (setf (aref new x) 1))
@@ -115,6 +124,7 @@
     t))
 
 (defun check-reduce (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (loop with tree-sum = (trees:reduce tree #'+)
      for start = 0 then (1+ x)
      for x = (position 1 bitvector :start start)
@@ -125,6 +135,7 @@
        (return t)))
 
 (defun check-reduce-from-end (tree bitvector)
+  (declare (type simple-bit-vector bitvector))
   (loop with tree-diff = (trees:reduce tree #'- :initial-value 0 :from-end t)
      for start = 0 then (1+ x)
      for x = (position 1 bitvector :start start)
