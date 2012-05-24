@@ -11,13 +11,15 @@
   :description "A library for binary trees in normal and balanced flavors"
   :license "BSD style"
   :components ((:file "package")
-               (:file "generics" :depends-on ("package"))
                (:file "types" :depends-on ("package"))
+               (:file "generics" :depends-on ("types"))
                (:file "print" :depends-on ("generics" "types"))
                (:file "binary-trees" :depends-on ("generics" "types"))
                (:file "red-black-trees" :depends-on ("types" "binary-trees"))
                (:file "avl-trees" :depends-on ("types" "binary-trees"))
                (:file "aa-trees" :depends-on ("types" "binary-trees"))
+               (:file "interval-trees" :depends-on ("types" "binary-trees"
+                                                    "red-black-trees"))
                (:file "iterator" :depends-on ("types" "binary-trees"))
                (:file "utils" :depends-on ("binary-trees"))
                (:static-file "LICENSE")

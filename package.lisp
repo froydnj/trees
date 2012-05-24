@@ -9,6 +9,7 @@
            #:avl-tree
            #:red-black-tree
            #:aa-tree
+           #:interval-tree
 
            #:insert
            #:find
@@ -22,6 +23,13 @@
 
            #:upper-bound
            #:lower-bound
+
+           #:interval
+           #:interval-start
+           #:interval-end
+           #:interval-equal
+           #:make-interval
+           #:find-in-interval
 
            #:dotree
            ;#:do-tree-range
