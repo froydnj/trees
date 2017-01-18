@@ -252,6 +252,67 @@
       (error (c) c)
       (:no-error (value) value))))
 
+(defun build-even-tree (tree-kind pred &optional (n 2000))
+  "Make a tree of N nodes that are all even numbers.  Useful for bounds
+testing."
+  (let ((tree (trees:make-binary-tree tree-kind pred
+                                      :test #'=
+                                      :key #'identity)))
+    (dotimes (i n)
+      (trees:insert (* 2 i) tree))
+    tree))
+
+(defun test-bounds (tree-kind pred &key reverse-p)
+  "Test TREE-KIND for UPPER/LOWER-BOUND correctness.  If REVERSE-P is non-NIL,
+it will be assumed that PRED, and therefore bounds, are inverted.
+
+This test is performed by creating a tree of only even numbers, and using
+UPPER-BOUND or LOWER-BOUND on a random number X within range.  If the number
+is even, the results should match.  If the number is odd, the upper and lower
+bounds should select the next closest number in the appropriate direction."
+  (let* ((n 2000)
+         (tree (build-even-tree tree-kind pred n)))
+    (flet ((bound-error (x upper lower correct-upper correct-lower)
+             (error "Bound mismatch: X = ~A, UPPER-BOUND = ~A, LOWER-BOUND = ~A, reverse-p => ~A
+Should be: UPPER-BOUND = ~A, LOWER-BOUND = ~A"
+                    x upper lower reverse-p correct-upper correct-lower)))
+      (dotimes (i 500)
+        (let* ((x (random n))
+               (upper-bound (trees:upper-bound x tree))
+               (lower-bound (trees:lower-bound x tree)))
+          (if (evenp x)
+              (unless (and (= upper-bound x)
+                           (= lower-bound x))
+                (bound-error x upper-bound lower-bound x x))
+              (if reverse-p
+                  (unless (and (= (1+ upper-bound) x)
+                               (= (1- lower-bound) x))
+                    (bound-error x upper-bound lower-bound (1- x) (1+ x)))
+                  (unless (and (= (1- upper-bound) x)
+                               (= (1+ lower-bound) x))
+                    (bound-error x upper-bound lower-bound (1+ x) (1- x)))))))))
+  t)
+
+(defun test-bounds-preds (tree-kind)
+  (test-bounds tree-kind #'<)
+  (test-bounds tree-kind #'<=)
+  (test-bounds tree-kind #'> :reverse-p t)
+  (test-bounds tree-kind #'>= :reverse-p t))
+
+(defun test-bounds-trees ()
+  (test-bounds-preds :normal)
+  (test-bounds-preds :aa)
+  (test-bounds-preds :avl)
+  (test-bounds-preds :red-black))
+
+(defun even-tree-test (kind pred x)
+  "A spot check for what FIND/UPPER-BOUND/LOWER-BOUND returns on X for KIND and PRED"
+  (let ((even-tree (build-even-tree kind pred)))
+    (values
+     (trees:find x even-tree)
+     (trees:upper-bound x even-tree)
+     (trees:lower-bound x even-tree))))
+
 (rtest:deftest :normal (build-and-run-checkers :normal) t)
 
 (rtest:deftest :avl (build-and-run-checkers :avl) t)
@@ -259,3 +320,5 @@
 (rtest:deftest :red-black (build-and-run-checkers :red-black) t)
 
 (rtest:deftest :aa (build-and-run-checkers :aa) t)
+
+(rtest:deftest :bounds (test-bounds-trees) t)
